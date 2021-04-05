@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
+  resources :editions
   devise_for :users
   resources :questions
   resources :proofs
   resources :registries
   resources :users
   resources :profiles
-  resources :editions
 
   devise_scope :user do
     post "sign_up", to: "registrations#create"

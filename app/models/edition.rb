@@ -5,8 +5,9 @@ class Edition
   field :description, type: String
   field :start_date_time, type: Time
   field :end_date_time, type: Time
+  field :created_by, type: String
 
-  has_many :edition
+  has_many :registry
   has_many :proof
 
   validates :title, presence: true

@@ -20,13 +20,6 @@ class EditionsController < ApplicationController
 
 
 
-
-
-
-
-
-
-
     # @editions = Edition.all
     # render json: @editions
   end
@@ -55,10 +48,6 @@ class EditionsController < ApplicationController
         }, status: :unauthorized
       end
     end
-
-
-
-
 
 
 
@@ -98,7 +87,11 @@ class EditionsController < ApplicationController
     end
 
 
+
+
+
     # @edition = Edition.new(edition_params)
+    #
     # if @edition.save
     #   render json: @edition, status: :created, location: @edition
     # else
@@ -138,6 +131,8 @@ class EditionsController < ApplicationController
     end
 
 
+
+
     # if @edition.update(edition_params)
     #   render json: @edition
     # else
@@ -175,16 +170,21 @@ class EditionsController < ApplicationController
         data: {}
       }, status: :unauthorized
     end
+
+
+    
+
+    # @edition.destroy
   end
 
   private
-  # Use callbacks to share common setup or constraints between actions.
-  def set_edition
-    @edition = Edition.find(params[:id])
-  end
+    # Use callbacks to share common setup or constraints between actions.
+    def set_edition
+      @edition = Edition.find(params[:id])
+    end
 
-  # Only allow a list of trusted parameters through.
-  def edition_params
-    params.require(:edition).permit(:title, :description, :start_date_time, :end_date_time)
-  end
+    # Only allow a list of trusted parameters through.
+    def edition_params
+      params.require(:edition).permit(:title, :description, :start_date_time, :end_date_time, :created_by)
+    end
 end
