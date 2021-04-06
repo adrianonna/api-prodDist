@@ -6,7 +6,7 @@ class ProfilesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       @profiles = Profile.all
       render json: @profiles
     else
@@ -28,7 +28,7 @@ class ProfilesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       render json: @profile
     else
       render json: {
@@ -48,7 +48,7 @@ class ProfilesController < ApplicationController
   def create
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       @profile = Profile.new(profile_params)
       if @profile.save
         render json: @profile, status: :created, location: @profile
@@ -79,7 +79,7 @@ class ProfilesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       if @profile.update(profile_params)
         render json: @profile
       else
@@ -110,7 +110,7 @@ class ProfilesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       @profile.destroy
     else
       render json: {

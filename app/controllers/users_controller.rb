@@ -6,10 +6,10 @@ class UsersController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       @users = User.all
       render json: @users
-    elsif userAuth[0].profile_id === 2
+    elsif userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       coordRegistries = Registry.where(:user_id => userAuth[0])
       arrUsers = []
       for r in coordRegistries
@@ -40,9 +40,9 @@ class UsersController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       render json: @user
-    elsif userAuth[0].profile_id === 2
+    elsif userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       userRegistries = Registry.where(:user_id => @user[:id])
       coordRegistries = Registry.where(:user_id => userAuth[0].id)
       if userRegistries != nil && coordRegistries != nil
@@ -103,7 +103,7 @@ class UsersController < ApplicationController
     emailRepetido = false
     passouSenha = nil
 
-    if user[0].profile_id === 1 || user[0].profile_id === 2
+    if user[0].profile_id === "606ba30ce4eafb0f8756b9e4" || user[0].profile_id === "606baa53e4eafb10df0a47a3"
       user_params.each do |param|
         if param[0] == "name" && param[1].scan(/\w+/).length == 2
           passouNome = true
@@ -161,7 +161,7 @@ class UsersController < ApplicationController
     userAuth = User.where(:authentication_token => tokenUser)
     @coordRegistries = Registry.where(:user_id => @user[:id])
 
-    if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       if @user[:id] == userAuth[0].id
         render json: {
           messages: "You don't have necessary authorization",
@@ -172,7 +172,7 @@ class UsersController < ApplicationController
         @coordRegistries.destroy
         @user.destroy
       end
-    elsif userAuth[0].profile_id === 1
+    elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       @coordRegistries.destroy
       @user.destroy
     end

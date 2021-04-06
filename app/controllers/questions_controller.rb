@@ -6,8 +6,8 @@ class QuestionsController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
-      if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
         arrProofs = []
         arrQuestions = []
@@ -20,7 +20,7 @@ class QuestionsController < ApplicationController
           }
           render json: arrQuestions
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @questions = Question.all
         render json: @questions
       end
@@ -48,8 +48,8 @@ class QuestionsController < ApplicationController
     userAuth = User.where(:authentication_token => tokenUser)
     entrou = false
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
-      if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         proof = Proof.find(@question[:proof_id])
         coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
         coordRegistries.each { |cr|
@@ -65,7 +65,7 @@ class QuestionsController < ApplicationController
             data: {}
           }, status: :unauthorized
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         render json: @question
       end
     else
@@ -89,8 +89,8 @@ class QuestionsController < ApplicationController
     userAuth = User.where(:authentication_token => tokenUser)
     passouTitle = false
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
-      if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         proof = Proof.find(question_params[:proof_id])
         coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
         coordRegistries.each { |cr|
@@ -120,7 +120,7 @@ class QuestionsController < ApplicationController
             data: {}
           }, status: :unauthorized
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @question = Question.new(question_params)
         @question.save
         render json: @question, status: :created, location: @question
@@ -152,8 +152,8 @@ class QuestionsController < ApplicationController
     passouTitle = false
     entrou = false
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
-      if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         proof = Proof.find(question_params[:proof_id])
         coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
         coordRegistries.each { |cr|
@@ -183,7 +183,7 @@ class QuestionsController < ApplicationController
             data: {}
           }, status: :unauthorized
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @_params.each do |param|
           if param[0] == "title" && param[1].length > 2 && param[1].length < 801
             passouTitle = true
@@ -225,8 +225,8 @@ class QuestionsController < ApplicationController
     userAuth = User.where(:authentication_token => tokenUser)
     entrou = false
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
-      if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         proof = Proof.find(@question[:proof_id])
         coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
         coordRegistries.each { |cr|
@@ -242,7 +242,7 @@ class QuestionsController < ApplicationController
             data: {}
           }, status: :unauthorized
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @question.destroy
       end
     else

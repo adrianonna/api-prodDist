@@ -46,7 +46,7 @@ class RegistrationsController < Devise::RegistrationsController
           data: {}
         }, status: :unprocessable_entity
       end
-    elsif userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
+    elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       user_params.each do |param|
         if param[0] == "name" && param[1].scan(/\w+/).length == 2
           passouNome = true

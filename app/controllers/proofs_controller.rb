@@ -6,8 +6,8 @@ class ProofsController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
-      if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
         arrProofs = []
         if coordRegistries != nil
@@ -16,7 +16,7 @@ class ProofsController < ApplicationController
           }
           render json: arrProofs
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @proofs = Proof.all
         render json: @proofs
       end
@@ -40,7 +40,7 @@ class ProofsController < ApplicationController
     userAuth = User.where(:authentication_token => tokenUser)
     entrou = false
 
-    if userAuth[0].profile_id === 2 || userAuth[0].profile_id === 3
+    if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" || userAuth[0].profile_id === "606bcba2e4eafb10df0a47a4"
       userRegistries = Registry.where(:user_id => userAuth[0].id)
       userRegistries.each { |cr|
         if cr.edition_id == @proof[:edition_id]
@@ -55,7 +55,7 @@ class ProofsController < ApplicationController
           data: {}
         }, status: :unauthorized
       end
-    elsif userAuth[0].profile_id === 1
+    elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       render json: @proof
     end
 
@@ -71,8 +71,8 @@ class ProofsController < ApplicationController
     passouDescri = false
     entrou = false
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
-      if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
         coordRegistries.each { |cr|
           if cr.edition_id == proof_params[:edition_id]
@@ -98,7 +98,7 @@ class ProofsController < ApplicationController
             data: {}
           }, status: :unauthorized
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @_params.each do |param|
           if param[0] == "description" && param[1].length > 5 && param[1].length < 301
             passouDescri = true
@@ -137,8 +137,8 @@ class ProofsController < ApplicationController
     passouDescri = false
     entrou = false
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
-      if userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         coordRegistries = Registry.where(:user_id => userAuth[0].id)
         coordRegistries.each { |cr|
           if cr.edition_id == proof_params[:edition_id]
@@ -163,7 +163,7 @@ class ProofsController < ApplicationController
             data: {}
           }, status: :unauthorized
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @_params.each do |param|
           if param[0] == "description" && param[1].length > 5 && param[1].length < 301
             passouDescri = true
@@ -200,14 +200,14 @@ class ProofsController < ApplicationController
     @questions = Question.where(:proof_id => @proof[:id])
     entrou = false
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
 
       # arrDataEdition = @proof[:start_date_time].to_datetime.strftime('%d/%m/%Y').split('/')
       # arrDataNow = Time.new.to_datetime.strftime('%d/%m/%Y').split('/')
       # p "arrDataEdition= #{arrDataEdition}"
       # p "arrDataNow= #{arrDataNow}"
 
-      if userAuth[0].profile_id === 2
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         coordRegistries = Registry.where(:user_id => userAuth[0].id)
         coordRegistries.each { |cr|
           if cr.edition_id == @proof[:edition_id]
@@ -230,7 +230,7 @@ class ProofsController < ApplicationController
             data: {}
           }, status: :unauthorized
         end
-      elsif userAuth[0].profile_id === 1
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @questions.destroy
         @proof.destroy
       end

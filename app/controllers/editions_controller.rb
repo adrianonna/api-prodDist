@@ -6,7 +6,7 @@ class EditionsController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       @editions = Edition.all
       render json: @editions
     else
@@ -30,7 +30,7 @@ class EditionsController < ApplicationController
     userAuth = User.where(:authentication_token => tokenUser)
     entrou = false
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       render json: @edition
     else
       coordRegistries = Registry.where(:user_id => userAuth[0].id)
@@ -61,7 +61,7 @@ class EditionsController < ApplicationController
     passouTitle = false
     passouDescri = false
 
-    if user[0].profile_id === 1 || user[0].profile_id === 2
+    if user[0].profile_id === "606ba30ce4eafb0f8756b9e4" || user[0].profile_id === "606baa53e4eafb10df0a47a3"
       @_params.each do |param|
         if param[0] == "title" && param[1].length > 5 && param[1].length < 151
           passouTitle = true
@@ -106,7 +106,7 @@ class EditionsController < ApplicationController
     passouTitle = false
     passouDescri = false
 
-    if @user[0].profile_id === 1 || @user[0].profile_id === 2
+    if @user[0].profile_id === "606ba30ce4eafb0f8756b9e4" || @user[0].profile_id === "606baa53e4eafb10df0a47a3"
       @_params.each do |param|
         if param[0] == "title" && param[1].length > 5 && param[1].length < 151
           passouTitle = true
@@ -147,7 +147,7 @@ class EditionsController < ApplicationController
     @proof = Proof.where(:edition_id => params[:id]) # todas as provas que fazem parte da edição a ser excluida
     @registries = Registry.where(:edition_id => params[:id])# todos os registros da edição a ser excluída
 
-    if userAuth[0].profile_id === 1
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
 
       # dateTime = @edition[:start_date_time].to_datetime
       # strData = dateTime.strftime("%H:%M:%S:%p")

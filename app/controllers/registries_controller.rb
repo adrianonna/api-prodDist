@@ -6,10 +6,10 @@ class RegistriesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 2 || userAuth[0].profile_id === 3
+    if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" || userAuth[0].profile_id === "606bcba2e4eafb10df0a47a4"
       userdRegistries = Registry.where(:user_id => userAuth[0].id)
       render json: userdRegistries
-    elsif userAuth[0].profile_id === 1
+    elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       @registries = Registry.all
       render json: @registries
     end
@@ -28,7 +28,7 @@ class RegistriesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 2 || userAuth[0].profile_id === 3
+    if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" || userAuth[0].profile_id === "606bcba2e4eafb10df0a47a4"
       userRegistries = Registry.where(:user_id => userAuth[0].id)
       if userRegistries != nil
         for r in userRegistries
@@ -43,7 +43,7 @@ class RegistriesController < ApplicationController
           data: {}
         }, status: :unauthorized
       end
-    elsif userAuth[0].profile_id === 1
+    elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       render json: @registry
     end
 
@@ -60,7 +60,7 @@ class RegistriesController < ApplicationController
     tokenUser = @_request.headers['X-User-Token']
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       edition = Edition.where(:id => registry_params[:edition_id]) # Só irá retornar uma, pois cada registro está está vinculado a uma edição
       arrDataEdition = edition[0].end_date_time.to_datetime.strftime('%d/%m/%Y').split('/')
       arrDataRegistry = Time.new.to_datetime.strftime('%d/%m/%Y').split('/')
@@ -126,14 +126,14 @@ class RegistriesController < ApplicationController
     tokenUser = @_request.headers['X-User-Token']
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       edition = Edition.where(:id => registry_params[:edition_id]) # Só irá retornar uma, pois cada registro está está vinculado a uma edição
       arrDataEdition = edition[0].end_date_time.to_datetime.strftime('%d/%m/%Y').split('/')
       arrDataRegistry = Time.new.to_datetime.strftime('%d/%m/%Y').split('/')
       if arrDataRegistry[2] <= arrDataEdition[2]
         if arrDataRegistry[1] <= arrDataEdition[1]
           if arrDataRegistry[0] < arrDataEdition[0]
-            if @registry.update(registry_params)
+            if @registry.update(registry_params) # Verificar se é necessário fazer a mesma condicão do create para as datas
               render json: @registry
             else
               render json: @registry.errors, status: :unprocessable_entity
@@ -179,7 +179,7 @@ class RegistriesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === 1 || userAuth[0].profile_id === 2
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4""606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       edition = Edition.where(:id => @registry[:edition_id]) # Retorna a edição desse registro
       proofs = Proof.where(:edition_id => edition[0].id) # Pego todas as provas dessa edição
       for p in proofs # Para cada prova dessa edição
