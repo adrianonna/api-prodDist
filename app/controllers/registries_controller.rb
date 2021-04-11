@@ -61,13 +61,15 @@ class RegistriesController < ApplicationController
     userAuth = User.where(:authentication_token => tokenUser)
 
     if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-      edition = Edition.where(:id => registry_params[:edition_id]) # Só irá retornar uma, pois cada registro está está vinculado a uma edição
-      arrDataEdition = edition[0].end_date_time.to_datetime.strftime('%d/%m/%Y').split('/')
+      @edition = Edition.find(params[:edition_id])
+      arrDataEdition = @edition["end_date_time"].to_datetime.strftime('%d/%m/%Y').split('/')
       arrDataRegistry = Time.new.to_datetime.strftime('%d/%m/%Y').split('/')
       if arrDataRegistry[2] <= arrDataEdition[2]
         if arrDataRegistry[1] <= arrDataEdition[1]
           if arrDataRegistry[0] <= arrDataEdition[0]
             @registry = Registry.new(registry_params)
+            @edition.registry_ids << @registry.id
+            @edition.update_attribute(:registry_ids, @edition.registry_ids)
             if @registry.save
               render json: @registry, status: :created, location: @registry
             else

@@ -3,7 +3,7 @@ class Profile
   include Mongoid::Timestamps
   field :permission, type: String
 
-  has_many :user
+  has_many :users
 
   validates :permission, presence: true
 end

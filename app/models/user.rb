@@ -42,8 +42,8 @@ class User
   field :telephone, type: String
 
   belongs_to :profile
-  has_many :registry
-  has_many :proof
+  has_many :registries
+  has_many :proofs
 
   validates :name, presence: true
   validates :cpf, presence: true

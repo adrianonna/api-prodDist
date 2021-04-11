@@ -9,7 +9,7 @@ class Proof
 
   belongs_to :edition
   belongs_to :user
-  has_many :question
+  has_many :questions
 
   validates :description, presence: true
   validates :edition_id, presence: true

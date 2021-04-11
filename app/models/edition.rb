@@ -7,8 +7,8 @@ class Edition
   field :end_date_time, type: Time
   field :created_by, type: String
 
-  has_many :registry
-  has_many :proof
+  has_and_belongs_to_many :registries
+  has_many :proofs
 
   validates :title, presence: true
   validates :description, presence: true
