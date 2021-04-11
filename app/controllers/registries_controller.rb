@@ -77,6 +77,8 @@ class RegistriesController < ApplicationController
             end
           elsif arrDataRegistry[0] > arrDataEdition[0] && arrDataRegistry[1] < arrDataEdition[1]
             @registry = Registry.new(registry_params)
+            @edition.registry_ids << @registry.id
+            @edition.update_attribute(:registry_ids, @edition.registry_ids)
             if @registry.save
               render json: @registry, status: :created, location: @registry
             else
