@@ -12,16 +12,16 @@ Things you may want to cover:
 * Rails version
 6.1.1
 
-* System dependencies
-gem 'rack-cors'
-gem 'devise'
-gem 'simple_token_authentication', '~> 1.0'
-gem 'rspec-rails', '~> 4.0.0'
-gem 'mongoid', '~> 7.2'
-gem 'webpacker', '~> 5.x'
-gem 'puma', '~> 5.0'
-gem 'listen', '~> 3.3'
-gem 'spring'
+* System dependencies</br>
+gem 'rack-cors'</br>
+gem 'devise'</br>
+gem 'simple_token_authentication', '1.0'</br>
+gem 'rspec-rails', '4.0.0'</br>
+gem 'mongoid', '7.2'</br>
+gem 'webpacker', '5.x'</br>
+gem 'puma', '5.0'</br>
+gem 'listen', '3.3'</br>
+gem 'spring'</br>
 
 Dependencies installation
 ```sh
