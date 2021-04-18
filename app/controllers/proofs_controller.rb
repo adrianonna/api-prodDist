@@ -84,6 +84,15 @@ class ProofsController < ApplicationController
             end
             if passouDescri == true
               @proof = Proof.new(proof_params)
+              @proof.question_ids = []
+
+              @edition = Edition.find(params[:edition_id])
+              @edition.proof_ids << @proof.id
+              @edition.update_attribute(:proof_ids, @edition.proof_ids)
+
+              @user = User.find(params[:user_id])
+              @user.proof_ids << @proof.id
+              @user.update_attribute(:proof_ids, @user.proof_ids)
               @proof.save
               render json: @proof, status: :created, location: @proof
             else
@@ -106,6 +115,16 @@ class ProofsController < ApplicationController
         end
         if passouDescri == true
           @proof = Proof.new(proof_params)
+          @proof.question_ids = []
+
+          @edition = Edition.find(params[:edition_id])
+          @edition.proof_ids << @proof.id
+          @edition.update_attribute(:proof_ids, @edition.proof_ids)
+
+          @user = User.find(params[:user_id])
+          @user.proof_ids << @proof.id
+          @user.update_attribute(:proof_ids, @user.proof_ids)
+          @proof.save
           @proof.save
           render json: @proof, status: :created, location: @proof
         else

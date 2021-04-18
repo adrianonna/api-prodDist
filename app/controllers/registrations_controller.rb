@@ -61,6 +61,10 @@ class RegistrationsController < Devise::RegistrationsController
         if param[0] == "password" || param[0] == "password_confirmation"
           passouSenha = param[1][/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,10}$/]
         end
+        if param[0] === "profile_id" && param[1] === "606baa53e4eafb10df0a47a3" || param[0] === "profile_id" && param[1] === "606bcba2e4eafb10df0a47a4"
+          user.registry_ids = []
+          user.proof_ids = []
+        end
       end
       if passouNome == true && passouCpf == true && emailRepetido == false && passouSenha.class == String && user.save
         render json: {

@@ -70,8 +70,11 @@ class RegistriesController < ApplicationController
             @registry = Registry.new(registry_params)
             @edition.registry_ids << @registry.id
             @edition.update_attribute(:registry_ids, @edition.registry_ids)
-            if @registry.save
-              render json: @registry, status: :created, location: @registry
+            @user = User.find(params[:user_id])
+            @user.registry_ids << @registry.id
+            @user.update_attribute(:registry_ids, @user.registry_ids)
+              if @registry.save
+                render json: @registry, status: :created, location: @registry
             else
               render json: @registry.errors, status: :unprocessable_entity
             end
@@ -79,6 +82,10 @@ class RegistriesController < ApplicationController
             @registry = Registry.new(registry_params)
             @edition.registry_ids << @registry.id
             @edition.update_attribute(:registry_ids, @edition.registry_ids)
+
+            @user = User.find(params[:user_id])
+            @user.registry_ids << @registry.id
+            @user.update_attribute(:registry_ids, @user.registry_ids)
             if @registry.save
               render json: @registry, status: :created, location: @registry
             else

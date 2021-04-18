@@ -74,6 +74,7 @@ class EditionsController < ApplicationController
       if passouTitle == true && passouDescri == true
         @edition = Edition.new(edition_params)
         @edition.registry_ids = []
+        @edition.proof_ids = []
         @edition.save
         render json: @edition, status: :created, location: @edition
       else
