@@ -70,11 +70,11 @@ class EditionsController < ApplicationController
           passouDescri = true
         end
       end
-
       if passouTitle == true && passouDescri == true
         @edition = Edition.new(edition_params)
         @edition.registry_ids = []
         @edition.proof_ids = []
+        @edition.created_by = user[0].id
         @edition.save
         render json: @edition, status: :created, location: @edition
       else
@@ -187,6 +187,6 @@ class EditionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def edition_params
-      params.require(:edition).permit(:title, :description, :start_date_time, :end_date_time, :created_by)
+      params.require(:edition).permit(:title, :description, :start_date_time, :end_date_time)
     end
 end

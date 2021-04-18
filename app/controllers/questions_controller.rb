@@ -102,6 +102,9 @@ class QuestionsController < ApplicationController
               end
             end
             if passouTitle == true
+              @proof = Proof.find(params[:proof_id])
+              @proof.question_ids << @question.id
+              @proof.update_attribute(:question_ids, @proof.question_ids)
               @question.save
               render json: @question, status: :created, location: @question
             else
@@ -122,6 +125,9 @@ class QuestionsController < ApplicationController
         end
       elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
         @question = Question.new(question_params)
+        @proof = Proof.find(params[:proof_id])
+        @proof.question_ids << @question.id
+        @proof.update_attribute(:question_ids, @proof.question_ids)
         @question.save
         render json: @question, status: :created, location: @question
       end
