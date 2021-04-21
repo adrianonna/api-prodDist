@@ -189,18 +189,37 @@ class RegistriesController < ApplicationController
   def destroy
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
+    edition = Edition.where(:id => @registry[:edition_id]) # Retorna a edição desse registro
+    proofs = Proof.where(:edition_id => edition[0].id) # Pego todas as provas dessa edição
 
-    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4""606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-      edition = Edition.where(:id => @registry[:edition_id]) # Retorna a edição desse registro
-      proofs = Proof.where(:edition_id => edition[0].id) # Pego todas as provas dessa edição
-      for p in proofs # Para cada prova dessa edição
-        if p.user_id == @registry[:user_id] # Se a prova for do usuário do registro a ser excluído
-          p.destroy
-          question = Question.where(:proof_id => p.id) # Retorna todas as questões da prova a ser excluida
-          question.destroy_all
+    p "edition= #{edition[0]}"
+    p "edition.registry_ids= #{edition[0].registry_ids}"
+
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if proofs.present?
+        for p in proofs # Para cada prova dessa edição
+          if p.user_id == @registry[:user_id] # Se a prova for do usuário do registro a ser excluído
+            p.destroy
+            question = Question.where(:proof_id => p.id) # Retorna todas as questões da prova a ser excluida
+            question.destroy_all
+          end
         end
-
+        @registry.destroy
+      else
+        p "ANTES edition[0].registry_ids= #{edition[0].registry_ids}"
+        for registry_id in edition[0].registry_ids #apagar o registro do array de registros da edicao, não está funcionando
+          if registry_id == @registry.id
+            p "registry_id= #{registry_id}"
+            p "@registry.id= #{@registry.id}"
+            p edition[0].registry_ids.class
+            edition[0].registry_ids.delete(registry_id)
+            # unset(edition[0].registry_ids[registry_id])
+          end
+        end
+        p "DEPOIS edition[0].registry_ids= #{edition[0].registry_ids}"
+        # @registry.destroy
       end
+
     else
       render json: {
         messages: "You don't have necessary authorization",

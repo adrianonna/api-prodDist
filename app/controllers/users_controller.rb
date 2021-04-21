@@ -159,6 +159,7 @@ class UsersController < ApplicationController
   def destroy
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
+    p "@user= #{@user}"
     @coordRegistries = Registry.where(:user_id => @user[:id])
 
     if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"

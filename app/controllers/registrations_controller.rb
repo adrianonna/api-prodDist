@@ -2,8 +2,6 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :ensure_params_exist, only: :create
   # sign up
   def create
-    tokenUser = @_request.headers["X-User-Token"]
-    userAuth = User.where(:authentication_token => tokenUser)
     userBanco = User.first
     user = User.new user_params
     passouNome = false
@@ -46,7 +44,7 @@ class RegistrationsController < Devise::RegistrationsController
           data: {}
         }, status: :unprocessable_entity
       end
-    elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+    else
       user_params.each do |param|
         if param[0] == "name" && param[1].scan(/\w+/).length == 2
           passouNome = true
@@ -61,9 +59,12 @@ class RegistrationsController < Devise::RegistrationsController
         if param[0] == "password" || param[0] == "password_confirmation"
           passouSenha = param[1][/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,10}$/]
         end
-        if param[0] === "profile_id" && param[1] === "606baa53e4eafb10df0a47a3" || param[0] === "profile_id" && param[1] === "606bcba2e4eafb10df0a47a4"
+        if param[0] === "profile_id" && param[1] === "606bcba2e4eafb10df0a47a4"
           user.registry_ids = []
           user.proof_ids = []
+        end
+        if param[0] === "profile_id" && param[1] === "606baa53e4eafb10df0a47a3"
+          user.registry_ids = []
         end
       end
       if passouNome == true && passouCpf == true && emailRepetido == false && passouSenha.class == String && user.save
@@ -79,12 +80,6 @@ class RegistrationsController < Devise::RegistrationsController
           data: {}
         }, status: :unprocessable_entity
       end
-    else
-      render json: {
-        messages: "You don't have necessary authorization",
-        is_success: false,
-        data: {}
-      }, status: :unauthorized
     end
 
 
