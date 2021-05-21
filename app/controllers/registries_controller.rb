@@ -6,16 +6,29 @@ class RegistriesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" || userAuth[0].profile_id === "606bcba2e4eafb10df0a47a4"
-      userdRegistries = Registry.where(:user_id => userAuth[0].id)
-      render json: userdRegistries
-    elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" # admin
       @registries = Registry.all
       render json: @registries
+    elsif userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" # coord
+      arrEdition = []
+      for registry_id in userAuth[0].registry_ids
+        registroCoordenador = Registry.where(:id => registry_id)
+        edicaoCoordenador = Edition.where(:id => registroCoordenador[0].edition_id)
+        arrEdition += edicaoCoordenador
+      end
+      arrRegistries= []
+      for edicaoCoordenador in arrEdition
+        registrosUsuarios = Registry.where(:edition_id => edicaoCoordenador.id)
+        arrRegistries += registrosUsuarios
+      end
+      render json: arrRegistries
+    else
+      render json: {
+        messages: "You don't have necessary authorization",
+        is_success: false,
+        data: {}
+      }, status: :unauthorized
     end
-
-
-
 
 
 
@@ -28,12 +41,23 @@ class RegistriesController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" || userAuth[0].profile_id === "606bcba2e4eafb10df0a47a4"
-      userRegistries = Registry.where(:user_id => userAuth[0].id)
-      if userRegistries != nil
-        for r in userRegistries
-          if @registry[:id] == r.id # Se o registro passado por parâmetro fizer parte do registro do usuário solicitante no request
-            render json: r
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
+      render json: @registry
+    elsif userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      coordRegistries = Registry.where(:user_id => userAuth[0].id)
+      userRegistries = Registry.where(:user_id => @registry[:user_id])
+      if userRegistries != nil && coordRegistries != nil
+        for cr in coordRegistries
+          for ur in userRegistries
+            if cr.edition_id == ur.edition_id
+              render json: @registry
+            else
+              render json: {
+                messages: "You don't have necessary authorization",
+                is_success: false,
+                data: {}
+              }, status: :unauthorized
+            end
           end
         end
       else
@@ -43,10 +67,18 @@ class RegistriesController < ApplicationController
           data: {}
         }, status: :unauthorized
       end
-    elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
-      render json: @registry
+    else
+      userRegistries = Registry.where(:user_id => @registry[:user_id])
+      if userAuth[0].id != @registry[:user_id]
+        render json: {
+          messages: "You don't have necessary authorization",
+          is_success: false,
+          data: {}
+        }, status: :unauthorized
+      else
+        render json: userRegistries
+      end
     end
-
 
 
 
@@ -138,7 +170,10 @@ class RegistriesController < ApplicationController
     userAuth = User.where(:authentication_token => tokenUser)
 
     if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-      edition = Edition.where(:id => registry_params[:edition_id]) # Só irá retornar uma, pois cada registro está está vinculado a uma edição
+      p "registry_params[:edition_id]= #{registry_params[:edition_id]}"
+      p "registry_params[:state]= #{registry_params[:state]}"
+      p "@registry= #{@registry[:edition_id]}"
+      edition = Edition.where(:id => @registry[:edition_id]) # Só irá retornar uma, pois cada registro está está vinculado a uma edição
       arrDataEdition = edition[0].end_date_time.to_datetime.strftime('%d/%m/%Y').split('/')
       arrDataRegistry = Time.new.to_datetime.strftime('%d/%m/%Y').split('/')
       if arrDataRegistry[2] <= arrDataEdition[2]

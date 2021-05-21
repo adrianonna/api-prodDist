@@ -5,16 +5,27 @@ class UsersController < ApplicationController
   def index
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
-
-    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" #admin
       @users = User.all
       render json: @users
-    elsif userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-      coordRegistries = Registry.where(:user_id => userAuth[0])
+    elsif userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" #coord
+      p "userAuth[0]= #{userAuth[0].name}"
+      arrEdition = []
+      for registry_id in userAuth[0].registry_ids
+        registroCoordenador = Registry.where(:id => registry_id)
+        edicaoCoordenador = Edition.where(:id => registroCoordenador[0].edition_id)
+        arrEdition += edicaoCoordenador
+      end
       arrUsers = []
-      for r in coordRegistries
-        users = User.where(:id => r.user_id) # Retorna todos os usuários das inscrições que o coord é inscrito
-        arrUsers += users
+      for edicaoCoordenador in arrEdition
+        p "edicaoCoordenador.title= #{edicaoCoordenador.title}"
+        p "edicaoCoordenador.id= #{edicaoCoordenador.id}"
+        registrosUsuarios = Registry.where(:edition_id => edicaoCoordenador.id)
+        for r in registrosUsuarios
+          p "r.user_id= #{r.user_id}"
+          users = User.where(:id => r.user_id)
+          arrUsers += users
+        end
       end
       render json: arrUsers
     else
@@ -48,7 +59,7 @@ class UsersController < ApplicationController
       if userRegistries != nil && coordRegistries != nil
         for cr in coordRegistries
           for ur in userRegistries
-            if cr.edition_id == ur.edition_id # Se algum registro do coord for de alguma edição que o registro o user também faça parte desta edição
+            if cr.edition_id == ur.edition_id # Se algum registro do coord for de alguma edição que o registro do user também faça parte desta edição
               render json: @user
             else
               render json: {
@@ -97,33 +108,79 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   def update
     tokenUser = @_request.headers["X-User-Token"]
-    user = User.where(:authentication_token => tokenUser)
+    userAuth = User.where(:authentication_token => tokenUser)
     passouNome = false
     passouCpf =  false
     emailRepetido = false
-    passouSenha = nil
 
-    if user[0].profile_id === "606ba30ce4eafb0f8756b9e4" || user[0].profile_id === "606baa53e4eafb10df0a47a3"
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       user_params.each do |param|
-        if param[0] == "name" && param[1].scan(/\w+/).length == 2
+        if param[0] == "name" && param[1].scan(/\w+/).length == 2 || (param[1] == @user[:name])
           passouNome = true
         end
         if param[0] == "cpf" && param[1].length == 11
           passouCpf = true
           User.all.each do |u|
-            emailRepetido = true if u.email === user.email
-            passouCpf = false if u.cpf === user.cpf
+            passouCpf = false if u.cpf == param[1]
+            passouCpf = true if param[1] == @user[:cpf]
           end
         end
-        if param[0] == "password" || param[0] == "password_confirmation"
-          passouSenha = param[1][/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,10}$/]
+        if param[0] == "email"
+          User.all.each do |u|
+            emailRepetido = true if u.email == param[1]
+            emailRepetido = false if param[1] == @user[:email]
+          end
         end
       end
-      if passouNome == true && passouCpf == true && emailRepetido == false && passouSenha.class == String
-        if @user.update(user_params)
-          render json: @user
+      if passouNome == true && passouCpf == true && emailRepetido == false
+        if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" # coord
+          if @user[:profile_id] === "606baa53e4eafb10df0a47a3"
+            render json: {
+              messages: "You don't have necessary authorization",
+              is_success: false,
+              data: {}
+            }, status: :unauthorized
+          else
+            userRegistries = Registry.where(:user_id => @user[:id])
+            coordRegistries = Registry.where(:user_id => userAuth[0].id)
+            if userRegistries != nil && coordRegistries != nil
+              for cr in coordRegistries
+                for ur in userRegistries
+                  if cr.edition_id == ur.edition_id
+                    if @user.update(user_params)
+                      render json: @user
+                    else
+                      render json: @user.errors, status: :unprocessable_entity
+                    end
+                  else
+                    render json: {
+                      messages: "You don't have necessary authorization",
+                      is_success: false,
+                      data: {}
+                    }, status: :unauthorized
+                  end
+                end
+              end
+            else
+              render json: {
+                messages: "You don't have necessary authorization",
+                is_success: false,
+                data: {}
+              }, status: :unauthorized
+            end
+          end
+        elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
+          if @user.update(user_params)
+            render json: @user
+          else
+            render json: @user.errors, status: :unprocessable_entity
+          end
         else
-          render json: @user.errors, status: :unprocessable_entity
+          render json: {
+            messages: "You don't have necessary authorization",
+            is_success: false,
+            data: {}
+          }, status: :unauthorized
         end
       else
         render json: {
@@ -163,15 +220,31 @@ class UsersController < ApplicationController
     @coordRegistries = Registry.where(:user_id => @user[:id])
 
     if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-      if @user[:id] == userAuth[0].id
+      if @user[:profile_id] === "606baa53e4eafb10df0a47a3"
         render json: {
           messages: "You don't have necessary authorization",
           is_success: false,
           data: {}
         }, status: :unauthorized
       else
-        @coordRegistries.destroy
-        @user.destroy
+        userRegistries = Registry.where(:user_id => @user[:id])
+        coordRegistries = Registry.where(:user_id => userAuth[0].id)
+        if userRegistries != nil && coordRegistries != nil
+          for cr in coordRegistries
+            for ur in userRegistries
+              if cr.edition_id == ur.edition_id
+                @coordRegistries.destroy
+                @user.destroy
+              else
+                render json: {
+                  messages: "You don't have necessary authorization",
+                  is_success: false,
+                  data: {}
+                }, status: :unauthorized
+              end
+            end
+          end
+        end
       end
     elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       @coordRegistries.destroy
