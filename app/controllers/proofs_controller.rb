@@ -8,7 +8,7 @@ class ProofsController < ApplicationController
 
     if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-        coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
+        coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna todos os registros do coord
         arrProofs = []
         if coordRegistries != nil
           coordRegistries.each { |cr|
@@ -75,7 +75,7 @@ class ProofsController < ApplicationController
       if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
         coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
         coordRegistries.each { |cr|
-          if cr.edition_id == proof_params[:edition_id]
+          if cr.edition_id === proof_params[:edition_id]
             entrou = true
             @_params.each do |param|
               if param[0] == "description" && param[1].length > 5 && param[1].length < 301

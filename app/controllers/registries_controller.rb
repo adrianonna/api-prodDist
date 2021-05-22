@@ -10,24 +10,21 @@ class RegistriesController < ApplicationController
       @registries = Registry.all
       render json: @registries
     elsif userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" # coord
-      arrEdition = []
+      arrEditionCoord = []
       for registry_id in userAuth[0].registry_ids
         registroCoordenador = Registry.where(:id => registry_id)
         edicaoCoordenador = Edition.where(:id => registroCoordenador[0].edition_id)
-        arrEdition += edicaoCoordenador
+        arrEditionCoord += edicaoCoordenador
       end
-      arrRegistries= []
-      for edicaoCoordenador in arrEdition
+      arrRegistriesUsuarios = []
+      for edicaoCoordenador in arrEditionCoord
         registrosUsuarios = Registry.where(:edition_id => edicaoCoordenador.id)
-        arrRegistries += registrosUsuarios
+        arrRegistriesUsuarios += registrosUsuarios
       end
-      render json: arrRegistries
+      render json: arrRegistriesUsuarios
     else
-      render json: {
-        messages: "You don't have necessary authorization",
-        is_success: false,
-        data: {}
-      }, status: :unauthorized
+      registries = Registry.where(:user_id => userAuth[0].id)
+      render json: registries
     end
 
 
@@ -68,7 +65,6 @@ class RegistriesController < ApplicationController
         }, status: :unauthorized
       end
     else
-      userRegistries = Registry.where(:user_id => @registry[:user_id])
       if userAuth[0].id != @registry[:user_id]
         render json: {
           messages: "You don't have necessary authorization",
@@ -76,7 +72,7 @@ class RegistriesController < ApplicationController
           data: {}
         }, status: :unauthorized
       else
-        render json: userRegistries
+        render json: @registry
       end
     end
 
@@ -165,22 +161,73 @@ class RegistriesController < ApplicationController
   end
 
   # PATCH/PUT /registries/1
+  # O adm pode editar qualquer registro
+  # O coord pode editar apenas registros que estejam na mesma edicão que a dele
+  # O participante não pode editar nenhum registro
   def update
     tokenUser = @_request.headers['X-User-Token']
     userAuth = User.where(:authentication_token => tokenUser)
 
     if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-      p "registry_params[:edition_id]= #{registry_params[:edition_id]}"
-      p "registry_params[:state]= #{registry_params[:state]}"
-      p "@registry= #{@registry[:edition_id]}"
-      edition = Edition.where(:id => @registry[:edition_id]) # Só irá retornar uma, pois cada registro está está vinculado a uma edição
-      arrDataEdition = edition[0].end_date_time.to_datetime.strftime('%d/%m/%Y').split('/')
-      arrDataRegistry = Time.new.to_datetime.strftime('%d/%m/%Y').split('/')
-      if arrDataRegistry[2] <= arrDataEdition[2]
-        if arrDataRegistry[1] <= arrDataEdition[1]
-          if arrDataRegistry[0] < arrDataEdition[0]
-            if @registry.update(registry_params) # Verificar se é necessário fazer a mesma condicão do create para as datas
-              render json: @registry
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+        registriesCoord = Registry.where(:user_id => userAuth[0].id)
+        for r in registriesCoord
+          if r.edition_id == @registry[:edition_id]
+            p "O PARTICIPANTE ESTA VINCULADO NA MESMA EDICAO DA(O) COORDENADOR(A) OU É SEU PROPRIO REGISTRO"
+            edition = Edition.where(:id => @registry[:edition_id]) # Só irá retornar uma, pois cada registro está está vinculado a uma edição
+            arrDataEdition = edition[0].end_date_time.to_datetime.strftime('%d/%m/%Y').split('/') # Aqui tenho a array com data final da edicao do registro
+            arrDataRegistry = Time.new.to_datetime.strftime('%d/%m/%Y').split('/') # Aqui tenho o array com a data que esta sendo modificado
+            if arrDataRegistry[2] <= arrDataEdition[2]
+              if arrDataRegistry[1] <= arrDataEdition[1]
+                if arrDataRegistry[0] <= arrDataEdition[0]
+                  if @registry.update(registry_params)
+                    render json: @registry
+                  else
+                    render json: @registry.errors, status: :unprocessable_entity
+                  end
+                elsif arrDataRegistry[0] > arrDataEdition[0] && arrDataRegistry[1] < arrDataEdition[1]
+                  if @registry.update(registry_params)
+                    render json: @registry
+                  else
+                    render json: @registry.errors, status: :unprocessable_entity
+                  end
+                else
+                  render json: @registry.errors, status: :unprocessable_entity
+                end
+              else
+                render json: @registry.errors, status: :unprocessable_entity
+              end
+            else
+              render json: @registry.errors, status: :unprocessable_entity
+            end
+          else
+            p "O PARTICIPANTE NÃO ESTA VINCULADO NA MESMA EDICAO DA(O) COORDENADOR(A) OU NÃO É SEU PROPRIO REGISTRO"
+            render json: {
+              messages: "You don't have necessary authorization",
+              is_success: false,
+              data: {}
+            }, status: :unauthorized
+          end
+        end
+      else
+        p "SE CAIR AQUI É PQ É ADM"
+        edition = Edition.where(:id => @registry[:edition_id]) # Só irá retornar uma, pois cada registro está está vinculado a uma edição
+        arrDataEdition = edition[0].end_date_time.to_datetime.strftime('%d/%m/%Y').split('/') # Aqui tenho a array com data final da edicao do registro
+        arrDataRegistry = Time.new.to_datetime.strftime('%d/%m/%Y').split('/') # Aqui tenho o array com a data que esta sendo modificado
+        if arrDataRegistry[2] <= arrDataEdition[2]
+          if arrDataRegistry[1] <= arrDataEdition[1]
+            if arrDataRegistry[0] <= arrDataEdition[0]
+              if @registry.update(registry_params)
+                render json: @registry
+              else
+                render json: @registry.errors, status: :unprocessable_entity
+              end
+            elsif arrDataRegistry[0] > arrDataEdition[0] && arrDataRegistry[1] < arrDataEdition[1]
+              if @registry.update(registry_params)
+                render json: @registry
+              else
+                render json: @registry.errors, status: :unprocessable_entity
+              end
             else
               render json: @registry.errors, status: :unprocessable_entity
             end
@@ -190,8 +237,6 @@ class RegistriesController < ApplicationController
         else
           render json: @registry.errors, status: :unprocessable_entity
         end
-      else
-        render json: @registry.errors, status: :unprocessable_entity
       end
     else
       render json: {
@@ -224,37 +269,50 @@ class RegistriesController < ApplicationController
   def destroy
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
-    edition = Edition.where(:id => @registry[:edition_id]) # Retorna a edição desse registro
-    proofs = Proof.where(:edition_id => edition[0].id) # Pego todas as provas dessa edição
-
-    p "edition= #{edition[0]}"
-    p "edition.registry_ids= #{edition[0].registry_ids}"
+    user = User.where(:id => @registry[:user_id]) # Pega o usuário do registro
+    possuiReg = false
 
     if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-      if proofs.present?
-        for p in proofs # Para cada prova dessa edição
-          if p.user_id == @registry[:user_id] # Se a prova for do usuário do registro a ser excluído
-            p.destroy
-            question = Question.where(:proof_id => p.id) # Retorna todas as questões da prova a ser excluida
-            question.destroy_all
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" # coord
+        registriesCoord = Registry.where(:user_id => userAuth[0].id) # Pega todos os registros do coord
+        if user[0].profile_id === "606ba30ce4eafb0f8756b9e4" || user[0].profile_id === "606baa53e4eafb10df0a47a3" # Se o usuário do registro for coord ou adm
+          render json: {
+            messages: "You don't have necessary authorization",
+            is_success: false,
+            data: {}
+          }, status: :unauthorized
+        else # Se o usuário do registro for participante
+          edition = Edition.where(:id => @registry[:edition_id]) # Retorna a edição do participante baseado no registro dele
+          p "edition= #{edition[0]}"
+          p "edition.registry_ids= #{edition[0].registry_ids}"
+          for r in registriesCoord
+            if r.edition_id == @registry[:edition_id] # Verifica se o usuário participante possui registro na mesma edicão do coord
+              possuiReg = true
+              p "ANTES edition[0].registry_ids= #{edition[0].registry_ids}"
+              for registry_id in edition[0].registry_ids # percorre array de registros da edicao do participante para remover desta edicao
+                if registry_id == @registry[:id]
+                  p "registry_id= #{registry_id}"
+                  p "@registry.id= #{@registry[:id]}"
+                  p "edition[0].registry_ids.class= #{edition[0].registry_ids.class}"
+                  edition[0].registry_ids.delete(@registry[:id])
+                  edition[0].registry_ids.delete(registry_id)
+                  p "DEPOIS edition[0].registry_ids= #{edition[0].registry_ids}"
+                end
+              end
+              @registry.destroy
+            end
+          end
+          if possuiReg == false
+            render json: {
+              messages: "You don't have necessary authorization",
+              is_success: false,
+              data: {}
+            }, status: :unauthorized
           end
         end
-        @registry.destroy
       else
-        p "ANTES edition[0].registry_ids= #{edition[0].registry_ids}"
-        for registry_id in edition[0].registry_ids #apagar o registro do array de registros da edicao, não está funcionando
-          if registry_id == @registry.id
-            p "registry_id= #{registry_id}"
-            p "@registry.id= #{@registry.id}"
-            p edition[0].registry_ids.class
-            edition[0].registry_ids.delete(registry_id)
-            # unset(edition[0].registry_ids[registry_id])
-          end
-        end
-        p "DEPOIS edition[0].registry_ids= #{edition[0].registry_ids}"
-        # @registry.destroy
+        @registry.destroy
       end
-
     else
       render json: {
         messages: "You don't have necessary authorization",

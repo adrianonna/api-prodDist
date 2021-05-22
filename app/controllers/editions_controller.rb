@@ -33,8 +33,8 @@ class EditionsController < ApplicationController
     if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
       render json: @edition
     else
-      coordRegistries = Registry.where(:user_id => userAuth[0].id)
-      coordRegistries.each { |cr|
+      userRegistries = Registry.where(:user_id => userAuth[0].id)
+      userRegistries.each { |cr|
         if cr.edition_id == @edition[:id]
           entrou = true
           render json: @edition
@@ -187,6 +187,6 @@ class EditionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def edition_params
-      params.require(:edition).permit(:title, :description, :start_date_time, :end_date_time)
+      params.require(:edition).permit(:title, :description, :start_date_time, :end_date_time) # , :created_by (obrigatório?)
     end
 end

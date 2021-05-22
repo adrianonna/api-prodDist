@@ -42,7 +42,7 @@ class User
   field :telephone, type: String
 
   belongs_to :profile
-  has_and_belongs_to_many :registries
+  has_and_belongs_to_many :registries # dependent: :destroy (testar)
   has_and_belongs_to_many :proofs
 
   validates :name, presence: true
