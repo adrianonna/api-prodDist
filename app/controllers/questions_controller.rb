@@ -42,6 +42,41 @@ class QuestionsController < ApplicationController
     # render json: @questions
   end
 
+
+  def questoesParticipante
+    tokenUser = @_request.headers["X-User-Token"]
+    userAuth = User.where(:authentication_token => tokenUser)
+
+    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+      if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
+        coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
+        arrProofs = []
+        arrQuestions = []
+        if coordRegistries != nil
+          coordRegistries.each { |cr|
+            arrProofs += Proof.where(:edition_id => cr.edition_id) # Retorna todas as provas onde a edição dessas provas forem iguais a edição do registro do coord
+          }
+          arrProofs.each { |p|
+            arrQuestions += Question.where(:proof_id => p[:id])
+          }
+          render json: arrQuestions
+        end
+      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
+        render json: Question.collection.find({}, {projection: {answer1: 1, answer2: 1, answer3: 1,
+                                                                            answer4: 1, answer5: 1, title: 1,
+                                                                            created_at: 1, proof_id: 1, _id: 1}})
+      end
+    else
+      render json: {
+        messages: "You don't have necessary authorization",
+        is_success: false,
+        data: {}
+      }, status: :unauthorized
+    end
+  end
+
+
+
   # GET /questions/1
   def show
     tokenUser = @_request.headers["X-User-Token"]
@@ -91,8 +126,8 @@ class QuestionsController < ApplicationController
 
     if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-        proof = Proof.find(question_params[:proof_id])
-        coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
+        proof = Proof.find(question_params[:proof_id]) # Prova relacionada a entidade questão
+        coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna todos os registros do coord
         coordRegistries.each { |cr|
           if cr.edition_id == proof.edition_id # Se a edição da prova for uma edição que o coord tem registro
             @question = Question.new(question_params)

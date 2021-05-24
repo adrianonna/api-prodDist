@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  get "questions/questoesParticipante", to: "questions#questoesParticipante"
+
   resources :editions
   devise_for :users
   resources :questions
