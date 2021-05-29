@@ -187,6 +187,6 @@ class EditionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def edition_params
-      params.require(:edition).permit(:title, :description, :start_date_time, :end_date_time) # , :created_by (obrigatório?)
+      params.require(:edition).permit(:title, :description, :start_date_time, :end_date_time, :created_by)
     end
 end
