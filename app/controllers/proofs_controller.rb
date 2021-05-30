@@ -85,14 +85,12 @@ class ProofsController < ApplicationController
             if passouDescri == true
               @proof = Proof.new(proof_params)
               @proof.question_ids = []
+              @proof.user_ids = []
 
               @edition = Edition.find(params[:edition_id])
               @edition.proof_ids << @proof.id
               @edition.update_attribute(:proof_ids, @edition.proof_ids)
 
-              @user = User.find(params[:user_id])
-              @user.proof_ids << @proof.id
-              @user.update_attribute(:proof_ids, @user.proof_ids)
               @proof.save
               render json: @proof, status: :created, location: @proof
             else
@@ -116,15 +114,12 @@ class ProofsController < ApplicationController
         if passouDescri == true
           @proof = Proof.new(proof_params)
           @proof.question_ids = []
+          @proof.user_ids = []
 
           @edition = Edition.find(params[:edition_id])
           @edition.proof_ids << @proof.id
           @edition.update_attribute(:proof_ids, @edition.proof_ids)
 
-          @user = User.find(params[:user_id])
-          @user.proof_ids << @proof.id
-          @user.update_attribute(:proof_ids, @user.proof_ids)
-          @proof.save
           @proof.save
           render json: @proof, status: :created, location: @proof
         else
@@ -273,6 +268,6 @@ class ProofsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def proof_params
-    params.require(:proof).permit(:description, :start_date_time, :end_date_time, :edition_id, :user_id)
+    params.require(:proof).permit(:description, :start_date_time, :end_date_time, :edition_id)
   end
 end

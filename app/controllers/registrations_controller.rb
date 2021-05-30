@@ -76,7 +76,6 @@ class RegistrationsController < Devise::RegistrationsController
         end
         if param[0] === "profile_id" && param[1] === "606bcba2e4eafb10df0a47a4" #participante
           user.registry_ids = []
-          user.proof_ids = []
         end
         if param[0] === "profile_id" && param[1] === "606baa53e4eafb10df0a47a3" #coordenador
           user.registry_ids = []

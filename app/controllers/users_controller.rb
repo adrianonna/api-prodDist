@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :update, :destroy, :adicionarUsuarioNaProva]
 
   # GET /users
   def index
@@ -105,6 +105,21 @@ class UsersController < ApplicationController
   #   end
   # end
 
+
+  def adicionarUsuarioNaProva
+    p "@user.id= #{@user.id}"
+    p "params= #{params}"
+    p "params[:proof_id]= #{params[:proof_id]}"
+    if params[:proof_id]
+      p "ENTREI AQUI"
+      @proof = Proof.find(params[:proof_id])
+      @proof.user_ids << @user.id
+      @proof.update_attribute(:user_ids, @proof.user_ids)
+      render json: @proof
+    end
+  end
+
+
   # PATCH/PUT /users/1
   def update
     tokenUser = @_request.headers["X-User-Token"]
@@ -132,6 +147,9 @@ class UsersController < ApplicationController
           end
         end
       end
+      p "passouNome= #{passouNome}"
+      p "passouCpf= #{passouCpf}"
+      p "emailRepetido= #{emailRepetido}"
       if passouNome == true && passouCpf == true && emailRepetido == false
         if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3" # coord
           if @user[:profile_id] === "606baa53e4eafb10df0a47a3"
@@ -269,6 +287,6 @@ class UsersController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation, :name, :cpf, :telephone, :profile_id)
+    params.require(:user).permit(:email, :password, :password_confirmation, :name, :cpf, :telephone, :profile_id, :proof_id)
   end
 end
