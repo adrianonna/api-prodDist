@@ -43,9 +43,9 @@ class User
 
   belongs_to :profile
   has_and_belongs_to_many :registries # dependent: :destroy (testar)
-  has_and_belongs_to_many :proof
+  # has_and_belongs_to_many :proof
 
-  # validates :name, presence: true
-  # validates :cpf, presence: true
-  # validates :profile_id, presence: true
+  validates :name, presence: true
+  validates :cpf, presence: true
+  validates :profile_id, presence: true
 end

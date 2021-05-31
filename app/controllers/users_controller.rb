@@ -94,30 +94,19 @@ class UsersController < ApplicationController
     # render json: @user
   end
 
-  # POST /users
-  # def create
-  #   @user = User.new(user_params)
 
-  #   if @user.save
-  #     render json: @user, status: :created, location: @user
-  #   else
-  #     render json: @user.errors, status: :unprocessable_entity
+  # def adicionarUsuarioNaProva
+  #   p "@user.id= #{@user.id}"
+  #   p "params= #{params}"
+  #   p "params[:proof_id]= #{params[:proof_id]}"
+  #   if params[:proof_id]
+  #     p "ENTREI AQUI"
+  #     @proof = Proof.find(params[:proof_id])
+  #     @proof.user_ids << @user.id
+  #     @proof.update_attribute(:user_ids, @proof.user_ids)
+  #     render json: @proof
   #   end
   # end
-
-
-  def adicionarUsuarioNaProva
-    p "@user.id= #{@user.id}"
-    p "params= #{params}"
-    p "params[:proof_id]= #{params[:proof_id]}"
-    if params[:proof_id]
-      p "ENTREI AQUI"
-      @proof = Proof.find(params[:proof_id])
-      @proof.user_ids << @user.id
-      @proof.update_attribute(:user_ids, @proof.user_ids)
-      render json: @proof
-    end
-  end
 
 
   # PATCH/PUT /users/1

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   get "questions/questoesParticipante", to: "questions#questoesParticipante"
-  patch "users/adicionarUsuarioNaProva/:id", to: "users#adicionarUsuarioNaProva"
+  # patch "users/adicionarUsuarioNaProva/:id", to: "users#adicionarUsuarioNaProva"
 
   resources :editions
   devise_for :users

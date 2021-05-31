@@ -85,7 +85,7 @@ class ProofsController < ApplicationController
             if passouDescri == true
               @proof = Proof.new(proof_params)
               @proof.question_ids = []
-              @proof.user_ids = []
+              # @proof.user_ids = []
 
               @edition = Edition.find(params[:edition_id])
               @edition.proof_ids << @proof.id
@@ -114,7 +114,7 @@ class ProofsController < ApplicationController
         if passouDescri == true
           @proof = Proof.new(proof_params)
           @proof.question_ids = []
-          @proof.user_ids = []
+          # @proof.user_ids = []
 
           @edition = Edition.find(params[:edition_id])
           @edition.proof_ids << @proof.id
