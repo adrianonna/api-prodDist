@@ -47,32 +47,33 @@ class QuestionsController < ApplicationController
     tokenUser = @_request.headers["X-User-Token"]
     userAuth = User.where(:authentication_token => tokenUser)
 
-    if userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4" || userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
       if userAuth[0].profile_id === "606baa53e4eafb10df0a47a3"
-        coordRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste coordenador
+        userRegistries = Registry.where(:user_id => userAuth[0].id) # Retorna os registros de cada edições deste usuario
         arrProofs = []
         arrQuestions = []
-        if coordRegistries != nil
-          coordRegistries.each { |cr|
+        if userRegistries != nil
+          userRegistries.each { |cr|
             arrProofs += Proof.where(:edition_id => cr.edition_id) # Retorna todas as provas onde a edição dessas provas forem iguais a edição do registro do coord
           }
           arrProofs.each { |p|
             arrQuestions += Question.where(:proof_id => p[:id])
           }
           render json: arrQuestions
+        else
+          render json: {
+            messages: "You don't have necessary authorization",
+            is_success: false,
+            data: {}
+          }, status: :unauthorized
         end
-      elsif userAuth[0].profile_id === "606ba30ce4eafb0f8756b9e4"
+        elsif userAuth[0].profile_id === "606bcba2e4eafb10df0a47a4"
         render json: Question.collection.find({}, {projection: {answer1: 1, answer2: 1, answer3: 1,
                                                                             answer4: 1, answer5: 1, title: 1,
                                                                             created_at: 1, proof_id: 1, _id: 1}})
+      else
+        @questions = Question.all
+        render json: @questions
       end
-    else
-      render json: {
-        messages: "You don't have necessary authorization",
-        is_success: false,
-        data: {}
-      }, status: :unauthorized
-    end
   end
 
 

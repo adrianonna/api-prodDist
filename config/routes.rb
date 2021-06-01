@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   get "questions/questoesParticipante", to: "questions#questoesParticipante"
+  get "proofs/questoesPorProva/:id", to: "proofs#questoesPorProva"
   # patch "users/adicionarUsuarioNaProva/:id", to: "users#adicionarUsuarioNaProva"
 
   resources :editions

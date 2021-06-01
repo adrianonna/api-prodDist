@@ -1,5 +1,5 @@
 class ProofsController < ApplicationController
-  before_action :set_proof, only: [:show, :update, :destroy]
+  before_action :set_proof, only: [:show, :update, :destroy, :questoesPorProva]
 
   # GET /proofs
   def index
@@ -143,6 +143,24 @@ class ProofsController < ApplicationController
     #   render json: @proof.errors, status: :unprocessable_entity
     # end
   end
+
+
+  def questoesPorProva
+    p "@proof.question_ids= #{@proof.question_ids}"
+    p "@proof[:edition_id]= #{@proof[:edition_id]}"
+    arrQuestions = []
+    questionFilter = Question.collection.find({}, {projection: {answer1: 1, answer2: 1, answer3: 1,
+                                                                answer4: 1, answer5: 1, title: 1,
+                                                                created_at: 1, proof_id: 1, _id: 1}})
+    for question in questionFilter
+      if question[:proof_id] === @proof[:id]
+        arrQuestions << question
+      end
+    end
+    render json: arrQuestions
+  end
+
+
 
   # PATCH/PUT /proofs/1
   def update
