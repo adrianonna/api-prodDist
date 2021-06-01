@@ -168,6 +168,14 @@ development:
     # (default: false)
     # use_utc: false
 
+production:
+  clients:
+    default:
+      uri: mongodb+srv://distribuida:distribuida@distribuida.jobfh.mongodb.net/distribuida?retryWrites=true&w=majority
+      options:
+        skip_version_check: true
+        safe: true
+
 test:
   clients:
     default:
