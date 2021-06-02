@@ -1,5 +1,5 @@
 class RegistriesController < ApplicationController
-  before_action :set_registry, only: [:show, :update, :destroy]
+  before_action :set_registry, only: [:show, :update, :destroy, :salvaQuestoes]
 
   # GET /registries
   def index
@@ -171,6 +171,8 @@ class RegistriesController < ApplicationController
 
 
   def salvaQuestoes
+    p "@registry= #{@registry}"
+    p "params[:id]= #{params[:id]}"
     @_params.each do |param|
       p "param= #{param[0]} - #{param[1]}"
     end
