@@ -169,6 +169,14 @@ class RegistriesController < ApplicationController
     # end
   end
 
+
+  def salvaQuestoes
+    @_params.each do |param|
+      p "param= #{param[0]} - #{param[1]}"
+    end
+  end
+
+
   # PATCH/PUT /registries/1
   # O adm pode editar qualquer registro
   # O coord pode editar apenas registros que estejam na mesma edicão que a dele
