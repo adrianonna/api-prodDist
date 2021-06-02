@@ -66,6 +66,7 @@ class QuestionsController < ApplicationController
             data: {}
           }, status: :unauthorized
         end
+        # TODO ajustar parar o participante vê apenas as questoes das suas edicoes
         elsif userAuth[0].profile_id === "606bcba2e4eafb10df0a47a4"
         render json: Question.collection.find({}, {projection: {answer1: 1, answer2: 1, answer3: 1,
                                                                             answer4: 1, answer5: 1, title: 1,

@@ -96,8 +96,13 @@ class RegistriesController < ApplicationController
         if arrDataRegistry[1] <= arrDataEdition[1]
           if arrDataRegistry[0] <= arrDataEdition[0]
             @registry = Registry.new(registry_params)
+            userRegistro = User.where(:id => registry_params[:user_id])
+            if userRegistro[0].profile_id === "606bcba2e4eafb10df0a47a4"
+              @registry.arrResposta = []
+            end
             @edition.registry_ids << @registry.id
             @edition.update_attribute(:registry_ids, @edition.registry_ids)
+
             @user = User.find(params[:user_id])
             @user.registry_ids << @registry.id
             @user.update_attribute(:registry_ids, @user.registry_ids)
@@ -108,6 +113,10 @@ class RegistriesController < ApplicationController
             end
           elsif arrDataRegistry[0] > arrDataEdition[0] && arrDataRegistry[1] < arrDataEdition[1]
             @registry = Registry.new(registry_params)
+            userRegistro = User.where(:id => registry_params[:user_id])
+            if userRegistro[0].profile_id === "606bcba2e4eafb10df0a47a4"
+              @registry.arrResposta = []
+            end
             @edition.registry_ids << @registry.id
             @edition.update_attribute(:registry_ids, @edition.registry_ids)
 
@@ -339,6 +348,6 @@ class RegistriesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def registry_params
-    params.require(:registry).permit(:state, :city, :school, :edition_id, :user_id)
+    params.require(:registry).permit(:state, :city, :school, :edition_id, :user_id, :arrResposta)
   end
 end

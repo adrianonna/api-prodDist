@@ -4,6 +4,7 @@ class Registry
   field :state, type: String
   field :city, type: String
   field :school, type: String
+  field :arrResposta, type: Array
 
   belongs_to :edition
   belongs_to :user
