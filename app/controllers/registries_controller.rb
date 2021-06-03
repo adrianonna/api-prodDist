@@ -171,10 +171,12 @@ class RegistriesController < ApplicationController
 
 
   def salvaQuestoes
-    p "@registry= #{@registry}"
-    p "params[:id]= #{params[:id]}"
     @_params.each do |param|
-      p "param= #{param[0]} - #{param[1]}"
+      question = Question.where(:id => param[0])
+      if question[0] != nil
+        @registry.arrResposta << "#{param[0]} - #{param[1]}"
+        @registry.update_attribute(:arrResposta, @registry.arrResposta)
+      end
     end
   end
 
